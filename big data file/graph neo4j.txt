@@ -1,0 +1,20 @@
+/*Find the most active users in terms of number of times they were mentioned in chat:*/
+
+MATCH (u:User)<-[m:Mentioned]-(i:ChatItem)
+RETURN u, count(m) AS num_mentions, collect(i) AS mentioned_items
+ORDER BY num_mentions DESC
+LIMIT 10
+
+
+
+############# User's Leaves ##################
+
+MATCH (u:User)-[r:Leaves]->(c:TeamChatSession)
+RETURN u, r, c, count(c) AS num_sessions_left
+ORDER BY num_sessions_left DESC
+
+################ User's Join ###########
+
+MATCH (u:User)-[r1:Join]->(c:TeamChatSession)<-[r2:Leaves]-(u)
+RETURN u, r1, r2, c.id AS session_id
+ORDER BY u.id
